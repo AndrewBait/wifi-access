@@ -74,7 +74,7 @@ async function handleRequestVerification(
     }
 
     // Usar um código fixo que será fixado no grupo WhatsApp
-    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
+    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || 'boascompras';
 
     // Criar/atualizar verificação
     const id = `phone_${phoneNumber}`;
@@ -141,7 +141,7 @@ async function handleVerify(
     // Para código fixo, não precisamos verificar registro prévio
     // Vamos criar um registro "on the fly" se não existir
     if (!verifications[id]) {
-      const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
+      const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || 'boascompras';
       verifications[id] = {
         id,
         phoneNumber,
@@ -172,7 +172,7 @@ async function handleVerify(
     }
 
     // Verificar código - comparar com o código fixo diretamente
-    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
+    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || 'boascompras';
     if (codigoFixoWhatsApp !== verificationCode) {
       verification.attempts += 1;
       return res.status(401).json({ 

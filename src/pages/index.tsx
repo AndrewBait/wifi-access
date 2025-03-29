@@ -62,7 +62,7 @@ const PhoneStep = ({
   onWhatsAppJoin: () => void; 
 }) => (
   <div className="space-y-6">
-    <h1 className="text-2xl font-bold text-center text-blue-600">Conecte-se ao WiFi da Loja</h1>
+    <h1 className="text-2xl font-bold text-center text-blue-600">Conecte-se ao WiFi do Mercado Supimpa</h1>
     <p className="text-gray-600 text-center">
       Entre no nosso grupo do WhatsApp para ver o código de verificação fixado no topo do grupo.
     </p>
@@ -80,7 +80,7 @@ const PhoneStep = ({
     </div>
     
     <div className="text-sm text-gray-500 text-center">
-      Este acesso é exclusivo para clientes da loja.
+      Este acesso é exclusivo para clientes do Mercado.
       Ao entrar no grupo, você receberá promoções exclusivas.
     </div>
   </div>
@@ -224,7 +224,7 @@ const SuccessStep = ({
     
     <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
       <p className="text-sm text-gray-600">
-        <span className="font-bold">Como usar:</span> Conecte-se à rede &ldquo;WIFI_LOJA&rdquo; 
+        <span className="font-bold">Como usar:</span> Conecte-se à rede &ldquo;CLIENTES&rdquo; 
         e insira a senha acima quando solicitado.
       </p>
     </div>
