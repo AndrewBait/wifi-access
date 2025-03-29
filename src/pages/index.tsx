@@ -87,7 +87,6 @@ const PhoneStep = ({
 );
 
 const VerificationStep = ({ 
-  phoneNumber, 
   verificationCode, 
   setVerificationCode, 
   isLoading, 
@@ -95,7 +94,6 @@ const VerificationStep = ({
   onBack,
   error
 }: { 
-  phoneNumber: string; 
   verificationCode: string; 
   setVerificationCode: (value: string) => void; 
   isLoading: boolean; 
@@ -170,7 +168,7 @@ const VerificationStep = ({
           {isLoading ? 'Verificando...' : 'Verificar código'}
         </button>
         
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-center mt-4">
           <button
             type="button"
             onClick={onBack}
@@ -180,18 +178,6 @@ const VerificationStep = ({
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
             Voltar
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => {
-              setVerificationCode('');
-              // Focar no primeiro input
-              inputRefs[0].current?.focus();
-            }}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            Limpar código
           </button>
         </div>
       </form>
@@ -341,7 +327,6 @@ const WifiAccessPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          phoneNumber,
           verificationCode 
         }),
       });
@@ -411,7 +396,6 @@ const WifiAccessPage = () => {
           
           {step === 2 && (
             <VerificationStep 
-              phoneNumber={phoneNumber}
               verificationCode={verificationCode}
               setVerificationCode={setVerificationCode}
               isLoading={loading}

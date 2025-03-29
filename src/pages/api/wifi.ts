@@ -124,17 +124,34 @@ async function handleVerify(
   res: NextApiResponse<ApiResponse>
 ) {
   try {
-    const { phoneNumber, verificationCode } = req.body;
+    const { verificationCode } = req.body;
+    const phoneNumber = req.body.phoneNumber || 'default';
 
-    // Validar dados
-    if (!phoneNumber || !verificationCode) {
+    // Validar código
+    if (!verificationCode) {
       return res.status(400).json({ 
         success: false, 
-        error: 'Número de telefone e código de verificação são obrigatórios' 
+        error: 'Código de verificação é obrigatório' 
       });
     }
 
-    const id = `phone_${phoneNumber}`;
+    // Usar um ID padrão ou baseado no telefone se fornecido
+    const id = phoneNumber !== 'default' ? `phone_${phoneNumber}` : 'default_user';
+    
+    // Para código fixo, não precisamos verificar registro prévio
+    // Vamos criar um registro "on the fly" se não existir
+    if (!verifications[id]) {
+      const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
+      verifications[id] = {
+        id,
+        phoneNumber,
+        verificationCode: codigoFixoWhatsApp,
+        isVerified: false,
+        attempts: 0,
+        createdAt: new Date()
+      };
+    }
+    
     const verification = verifications[id];
     
     // Verificar se existe
@@ -154,8 +171,9 @@ async function handleVerify(
       });
     }
 
-    // Verificar código
-    if (verification.verificationCode !== verificationCode) {
+    // Verificar código - comparar com o código fixo diretamente
+    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
+    if (codigoFixoWhatsApp !== verificationCode) {
       verification.attempts += 1;
       return res.status(401).json({ 
         success: false, 
