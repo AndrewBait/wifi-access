@@ -1,7 +1,8 @@
 import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import Head from 'next/head';
-import { Check, Lock, Phone } from 'lucide-react';
-import { setCookie, getCookie } from 'cookies-next';
+import { Check, Lock, Phone, RefreshCw } from 'lucide-react';
+import { setCookie, getCookie, deleteCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 // Funções utilitárias
 function formatPhoneNumber(phone: string): string {
@@ -187,10 +188,12 @@ const VerificationStep = ({
 
 const SuccessStep = ({ 
   wifiPassword,
-  expiresAt
+  expiresAt,
+  onLogout
 }: { 
   wifiPassword: string;
   expiresAt?: Date;
+  onLogout: () => void;
 }) => (
   <div className="space-y-6">
     <div className="flex justify-center">
@@ -229,6 +232,14 @@ const SuccessStep = ({
       </p>
     </div>
     
+    <button
+      onClick={onLogout}
+      className="w-full mt-4 px-4 py-2 flex items-center justify-center text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-md font-medium transition duration-150"
+    >
+      <RefreshCw size={16} className="mr-2" />
+      Limpar acesso e reiniciar
+    </button>
+    
     <div className="pt-4 mt-2 border-t border-gray-200">
       <p className="text-sm text-gray-500 text-center">
         Obrigado por visitar nossa loja! Aproveite a navegação.
@@ -246,6 +257,17 @@ const WifiAccessPage = () => {
   const [wifiPassword, setWifiPassword] = useState('');
   const [expiresAt, setExpiresAt] = useState<Date | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
+  const router = useRouter();
+  const { reset } = router.query;
+
+  // Limpar o acesso se o parâmetro reset=true estiver presente na URL
+  useEffect(() => {
+    if (reset === 'true') {
+      handleLogout();
+      // Remover o parâmetro de reset da URL
+      router.replace('/', undefined, { shallow: true });
+    }
+  }, [reset, router]);
 
   // Verificar se já tem um token válido ao carregar a página
   useEffect(() => {
@@ -270,10 +292,13 @@ const WifiAccessPage = () => {
             if (data.data.expiresAt) {
               setExpiresAt(new Date(data.data.expiresAt));
             }
+            // Ir direto para a tela de sucesso
             setStep(3);
           }
         } catch (err) {
           console.error('Erro ao validar token:', err);
+          // Se houver erro, invalidar o token
+          handleLogout();
         } finally {
           setLoading(false);
         }
@@ -282,6 +307,23 @@ const WifiAccessPage = () => {
     
     checkExistingSession();
   }, []);
+
+  // Limpar o acesso/logout
+  const handleLogout = () => {
+    // Remover o cookie
+    deleteCookie('wifi_access_token');
+    
+    // Redefinir estados
+    setStep(1);
+    setPhoneNumber('');
+    setVerificationCode('');
+    setWifiPassword('');
+    setExpiresAt(undefined);
+    setError(undefined);
+    
+    // Força atualização completa da página para limpar qualquer cache
+    window.location.href = '/';
+  };
 
   // Handlers
   const handlePhoneSubmit = async (e: FormEvent) => {
@@ -372,6 +414,9 @@ const WifiAccessPage = () => {
         <title>Acesso WiFi da Loja</title>
         <meta name="description" content="Acesse nossa rede WiFi exclusiva para clientes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -409,12 +454,13 @@ const WifiAccessPage = () => {
             <SuccessStep 
               wifiPassword={wifiPassword}
               expiresAt={expiresAt}
+              onLogout={handleLogout}
             />
           )}
         </div>
         
         <div className="mt-4 text-xs text-gray-500">
-          &copy; {new Date().getFullYear()} Sua Loja | Todos os direitos reservados
+          &copy; {new Date().getFullYear()} Mercado Supimpa | Todos os direitos reservados
         </div>
       </div>
     </>
