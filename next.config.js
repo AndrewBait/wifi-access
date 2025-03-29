@@ -5,9 +5,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Opcional: também ignorar erros de TypeScript
+    // Ignorar erros de TypeScript durante build
     ignoreBuildErrors: true,
   },
+  // Configurações adicionais
+  swcMinify: true,
+  reactStrictMode: true,
 };
 
 module.exports = nextConfig;

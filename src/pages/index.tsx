@@ -53,8 +53,12 @@ const StepIndicator = ({ currentStep }: { currentStep: number }) => {
 };
 
 const PhoneStep = ({ 
+  onPhoneChange,
+  onRequestVerification,
   onWhatsAppJoin 
 }: { 
+  onPhoneChange: (phoneNumber: string) => void;
+  onRequestVerification: (e: FormEvent) => void;
   onWhatsAppJoin: () => void; 
 }) => (
   <div className="space-y-6">
@@ -81,7 +85,6 @@ const PhoneStep = ({
     </div>
   </div>
 );
-
 
 const VerificationStep = ({ 
   phoneNumber, 
@@ -237,7 +240,7 @@ const SuccessStep = ({
     
     <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
       <p className="text-sm text-gray-600">
-        <span className="font-bold">Como usar:</span> Conecte-se à rede "WIFI_LOJA" 
+        <span className="font-bold">Como usar:</span> Conecte-se à rede &ldquo;WIFI_LOJA&rdquo; 
         e insira a senha acima quando solicitado.
       </p>
     </div>
@@ -376,6 +379,8 @@ const WifiAccessPage = () => {
   const handleWhatsAppJoin = () => {
     // Abrir o link do grupo do WhatsApp em uma nova aba
     window.open('https://chat.whatsapp.com/KXUa6uQuSVf2oYF3Em6Uuv', '_blank');
+    // Avançar para o próximo passo após abrir o grupo
+    setStep(2);
   };
 
   return (
@@ -400,13 +405,9 @@ const WifiAccessPage = () => {
           
           {step === 1 && (
             <PhoneStep 
-              onWhatsAppJoin={() => {
-                // Abrir o link do grupo do WhatsApp em uma nova aba
-                window.open('https://chat.whatsapp.com/KXUa6uQuSVf2oYF3Em6Uuv', '_blank');
-                
-                // Opcional: avançar automaticamente para o passo de verificação
-                setStep(2);
-              }}
+              onPhoneChange={setPhoneNumber}
+              onRequestVerification={handlePhoneSubmit}
+              onWhatsAppJoin={handleWhatsAppJoin}
             />
           )}
           

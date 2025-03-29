@@ -9,7 +9,7 @@ const WIFI_PASSWORD = process.env.WIFI_PASSWORD || 'SenhaSeguraDaLoja2024';
 interface ApiResponse {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
 
@@ -21,6 +21,12 @@ interface UserVerification {
   verifiedAt?: Date;
   attempts: number;
   createdAt: Date;
+}
+
+interface JwtPayload {
+  phoneNumber: string;
+  verified: boolean;
+  exp: number;
 }
 
 // Base de dados em memória (para ambientes de desenvolvimento)
@@ -216,7 +222,7 @@ async function handleValidateToken(
 
     try {
       // Verificar token
-      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
       
       // Calcular data de expiração
       const expiresAt = new Date(decoded.exp * 1000);
@@ -238,7 +244,8 @@ async function handleValidateToken(
         }
       });
       
-    } catch (jwtError) {
+    } catch (error) {
+      // Error is handled without using the variable
       return res.status(401).json({ 
         success: false, 
         error: 'Token inválido' 
