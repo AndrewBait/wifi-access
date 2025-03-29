@@ -361,7 +361,7 @@ const WifiAccessPage = () => {
 
   const handleWhatsAppJoin = () => {
     // Abrir o link do grupo do WhatsApp em uma nova aba
-    window.open('https://chat.whatsapp.com/KXUa6uQuSVf2oYF3Em6Uuv', '_blank');
+    window.open('https://chat.whatsapp.com/BhwHe2NFfAyLh2TqD3gt3U', '_blank');
     // Avançar para o próximo passo após abrir o grupo
     setStep(2);
   };
