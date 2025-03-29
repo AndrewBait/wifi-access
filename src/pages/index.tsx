@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import Head from 'next/head';
-import { Check, Lock, Phone, RefreshCw } from 'lucide-react';
+import { Check, Lock, Phone, RefreshCw, HelpCircle, X } from 'lucide-react';
 import { setCookie, getCookie, deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 
@@ -87,6 +87,99 @@ const PhoneStep = ({
   </div>
 );
 
+// Modal Tutorial
+const TutorialModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  if (!isOpen) return null;
+  
+  // Função para fechar o modal ao clicar fora
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+  
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" 
+      onClick={handleBackdropClick}
+    >
+      <div className="bg-white rounded-lg max-w-md w-full p-5 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold text-blue-600">Como encontrar o código no WhatsApp</h3>
+          <button 
+            onClick={onClose} 
+            className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100"
+            aria-label="Fechar tutorial"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-medium text-gray-800 mb-2">Passo 1: Abra os detalhes do grupo</h4>
+            <div className="bg-gray-100 rounded-lg p-4 flex flex-col items-center">
+              <div className="w-full bg-green-50 border border-green-100 rounded-lg p-3 mb-2">
+                <p className="text-gray-700 text-sm">
+                  Toque no nome do grupo no topo da tela para abrir os detalhes do grupo
+                </p>
+              </div>
+              
+              {/* Substitua este div pela imagem real do tutorial */}
+              <div className="bg-gray-200 w-full rounded-md overflow-hidden border border-gray-300">
+                <img 
+                  src="/images/tutorial-step1.png" 
+                  alt="Como clicar no nome do grupo do WhatsApp"
+                  className="w-full h-auto"
+                  onError={(e) => {
+                    // Fallback se a imagem não carregar
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 300 200'%3E%3Crect fill='%23f3f4f6' width='300' height='200'/%3E%3Ctext fill='%236b7280' font-family='Arial' font-size='14' text-anchor='middle' x='150' y='100'%3EClique no nome do grupo no topo%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="font-medium text-gray-800 mb-2">Passo 2: Localize o código nos Recados</h4>
+            <div className="bg-gray-100 rounded-lg p-4 flex flex-col items-center">
+              <div className="w-full bg-green-50 border border-green-100 rounded-lg p-3 mb-2">
+                <p className="text-gray-700 text-sm">
+                  O código de verificação estará fixado na seção "Descrição" do grupo. Role para cima para ver os recados.
+                </p>
+              </div>
+              
+              {/* Substitua este div pela imagem real do tutorial */}
+              <div className="bg-gray-200 w-full rounded-md overflow-hidden border border-gray-300">
+                <img 
+                  src="/images/tutorial-step2.png" 
+                  alt="Localização do código na seção de recados do WhatsApp"
+                  className="w-full h-auto"
+                  onError={(e) => {
+                    // Fallback se a imagem não carregar
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 300 200'%3E%3Crect fill='%23f3f4f6' width='300' height='200'/%3E%3Ctext fill='%236b7280' font-family='Arial' font-size='14' text-anchor='middle' x='150' y='100'%3EO código está fixado nos recados do grupo%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <button 
+            onClick={onClose}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            Entendi, obrigado!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const VerificationStep = ({ 
   verificationCode, 
   setVerificationCode, 
@@ -102,6 +195,7 @@ const VerificationStep = ({
   onBack: () => void;
   error?: string;
 }) => {
+  const [showTutorial, setShowTutorial] = useState(false);
   // Referências para os inputs do código
   const inputRefs = [
     useRef<HTMLInputElement>(null),
@@ -132,6 +226,20 @@ const VerificationStep = ({
       <p className="text-gray-600 text-center">
         Digite o código de 6 dígitos que está fixado no grupo do WhatsApp
       </p>
+      
+      <button
+        type="button"
+        onClick={() => setShowTutorial(true)}
+        className="w-full flex items-center justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 py-2 rounded-md border border-blue-100 transition-colors duration-200"
+      >
+        <HelpCircle size={16} className="mr-2" />
+        Como encontrar o código?
+      </button>
+      
+      <TutorialModal 
+        isOpen={showTutorial}
+        onClose={() => setShowTutorial(false)}
+      />
       
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="flex justify-center space-x-2 my-6">
@@ -460,7 +568,7 @@ const WifiAccessPage = () => {
         </div>
         
         <div className="mt-4 text-xs text-gray-500">
-          &copy; {new Date().getFullYear()} Mercado Supimpa | Todos os direitos reservados
+          &copy; {new Date().getFullYear()} Sua Loja | Todos os direitos reservados
         </div>
       </div>
     </>
