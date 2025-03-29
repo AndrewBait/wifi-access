@@ -224,7 +224,7 @@ const SuccessStep = ({
     
     <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
       <p className="text-sm text-gray-600">
-        <span className="font-bold">Como usar:</span> Conecte-se à rede &ldquo;CLIENTES&rdquo; 
+        <span className="font-bold">Como usar:</span> Conecte-se à nossa rede &ldquo;CLIENTES&rdquo; 
         e insira a senha acima quando solicitado.
       </p>
     </div>
