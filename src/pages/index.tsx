@@ -64,7 +64,7 @@ const PhoneStep = ({
   <div className="space-y-6">
     <h1 className="text-2xl font-bold text-center text-blue-600">Conecte-se ao WiFi da Loja</h1>
     <p className="text-gray-600 text-center">
-      Entre no nosso grupo do WhatsApp para receber o código de verificação.
+      Entre no nosso grupo do WhatsApp para ver o código de verificação fixado no topo do grupo.
     </p>
     
     <div className="mt-8">
@@ -131,9 +131,7 @@ const VerificationStep = ({
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-center text-blue-600">Verificação</h1>
       <p className="text-gray-600 text-center">
-        Digite o código de 6 dígitos enviado para o número
-        <br />
-        <span className="font-medium">{formatPhoneNumber(phoneNumber)}</span>
+        Digite o código de 6 dígitos que está fixado no grupo do WhatsApp
       </p>
       
       <form onSubmit={onSubmit} className="space-y-4">
@@ -193,7 +191,7 @@ const VerificationStep = ({
             }}
             className="text-blue-600 hover:text-blue-800"
           >
-            Reenviar código
+            Limpar código
           </button>
         </div>
       </form>

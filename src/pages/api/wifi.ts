@@ -73,15 +73,15 @@ async function handleRequestVerification(
       });
     }
 
-    // Gerar código de verificação de 6 dígitos
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // Usar um código fixo que será fixado no grupo WhatsApp
+    const codigoFixoWhatsApp = process.env.CODIGO_WHATSAPP || '123456';
 
     // Criar/atualizar verificação
     const id = `phone_${phoneNumber}`;
     
     if (verifications[id]) {
       // Reset da verificação existente
-      verifications[id].verificationCode = verificationCode;
+      verifications[id].verificationCode = codigoFixoWhatsApp;
       verifications[id].isVerified = false;
       verifications[id].attempts = 0;
     } else {
@@ -89,17 +89,16 @@ async function handleRequestVerification(
       verifications[id] = {
         id,
         phoneNumber,
-        verificationCode,
+        verificationCode: codigoFixoWhatsApp,
         isVerified: false,
         attempts: 0,
         createdAt: new Date()
       };
     }
 
-    // Em produção, enviar SMS/WhatsApp com o código
-    // Para o propósito desta demo, apenas logamos o código no console (ambiente de dev)
+    // Em ambiente de desenvolvimento, mostrar o código no console para ajudar nos testes
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[DEV] Código de verificação para ${phoneNumber}: ${verificationCode}`);
+      console.log(`[DEV] Código fixo para verificação: ${codigoFixoWhatsApp}`);
     }
 
     // Integração com WhatsApp/SMS seria aqui
